@@ -11,8 +11,8 @@ app.use(express.json())
 
 mongoose.connect("mongodb+srv://harish:mongodb123@cluster0.ig2c6pi.mongodb.net/passkey?appName=Cluster0").then(function(){
     console.log("connected to DB")
-}).catch(function(){
-    console.log("failed to connect")
+}).catch(function(err){
+    console.log("failed to connect",err)
 })
 
 var credential = mongoose.model("credential",{},"bulkmail")
@@ -33,7 +33,7 @@ app.post("/success",function(req,res){
   },
 });
 
-new Promise( async function(resolve,reject)
+        new Promise( async function(resolve,reject)
     {
             try{
         for (let i = 0; i < emailList.length; i++)
@@ -41,7 +41,7 @@ new Promise( async function(resolve,reject)
              await transporter.sendMail(
             {
               from:"hkumar59455@gmail.com",
-              to:emailList[0],
+              to:emailList[i],
               subject:"A message from Bulk Mail app",
               text:msg
             }
