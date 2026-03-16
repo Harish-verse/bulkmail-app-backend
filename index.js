@@ -4,7 +4,7 @@ const nodemailer = require("nodemailer");
 const mongoose = require("mongoose")
 
 const app = express()
-const port = 5000
+const PORT = process.env.PORT || 5000;
 
 app.use(cors())
 app.use(express.json())
@@ -23,6 +23,7 @@ app.post("/success",function(req,res){
     var emailList = req.body.emailList
 
    credential.find().then(function(data){
+    
     // Create a transporter using Ethereal test credentials.
    // For production, replace with your actual SMTP server details.
     const transporter = nodemailer.createTransport({
@@ -68,6 +69,6 @@ app.post("/success",function(req,res){
    
 })
 
-app.listen(port,function(){
-    console.log("Server Started....")
+app.listen(PORT,function(){
+    console.log("Server Started...."+ PORT)
 })
