@@ -4,21 +4,22 @@ const nodemailer = require("nodemailer");
 const mongoose = require("mongoose")
 
 const app = express()
-const PORT = process.env.PORT || 5000;
+const PORT = 5000
 
 app.use(cors())
 app.use(express.json())
 
 mongoose.connect("mongodb+srv://harish:mongodb123@cluster0.ig2c6pi.mongodb.net/passkey?appName=Cluster0").then(function(){
     console.log("connected to DB")
-}).catch(function(err){
-    console.log("failed to connect",err)
+}).catch(function(){
+    console.log("failed to connect")
 })
 
 var credential = mongoose.model("credential",{},"bulkmail")
 
 
 app.post("/success",function(req,res){
+console.log("API HIT",req.body)
     var msg = req.body.msg
     var emailList = req.body.emailList
 
@@ -54,6 +55,7 @@ app.post("/success",function(req,res){
     }
     catch(error)
     {
+        console.log("MAIL ERROR",error)
         reject("failed")
     }
 
