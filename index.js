@@ -19,7 +19,7 @@ var credential = mongoose.model("credential",{},"bulkmail")
 
 
 app.post("/success",function(req,res){
-    
+
     var msg = req.body.msg
     var emailList = req.body.emailList
 
@@ -35,9 +35,7 @@ app.post("/success",function(req,res){
     user: data[0].toJSON().user,
     pass: data[0].toJSON().pass,
   },
-  tls: {
-    rejectUnauthorized: false
-  }
+ connectionTimeout: 10000,
 });
 
         new Promise( async function(resolve,reject)
