@@ -28,14 +28,13 @@ app.post("/success",function(req,res){
     // Create a transporter using Ethereal test credentials.
    // For production, replace with your actual SMTP server details.
     const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
+    host: "smtp-relay.gmail.com",
+    port: 2525,
     secure: false,
     auth: {
     user: data[0].toJSON().user,
     pass: data[0].toJSON().pass,
   },
- connectionTimeout: 10000,
 });
 
         new Promise( async function(resolve,reject)
