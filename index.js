@@ -19,7 +19,7 @@ var credential = mongoose.model("credential",{},"bulkmail")
 
 
 app.post("/success",function(req,res){
-console.log("API HIT",req.body)
+    
     var msg = req.body.msg
     var emailList = req.body.emailList
 
@@ -28,11 +28,16 @@ console.log("API HIT",req.body)
     // Create a transporter using Ethereal test credentials.
    // For production, replace with your actual SMTP server details.
     const transporter = nodemailer.createTransport({
- service:"gmail",
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false,
     auth: {
     user: data[0].toJSON().user,
     pass: data[0].toJSON().pass,
   },
+  tls: {
+    rejectUnauthorized: false
+  }
 });
 
         new Promise( async function(resolve,reject)
