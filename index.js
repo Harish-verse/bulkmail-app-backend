@@ -28,7 +28,9 @@ app.post("/success",function(req,res){
     // Create a transporter using Ethereal test credentials.
    // For production, replace with your actual SMTP server details.
     const transporter = nodemailer.createTransport({
-    service:"gmail",
+    host: "smtp.resend.com",
+    port: 587,
+    secure: false,
     auth: {
     user: data[0].toJSON().user,
     pass: data[0].toJSON().pass,
@@ -43,7 +45,7 @@ app.post("/success",function(req,res){
          {
              await transporter.sendMail(
             {
-              from:"hkumar59455@gmail.com",
+              from:"onboarding@resend.dev",
               to:emailList[i],
               subject:"A message from Bulk Mail app",
               text:msg
