@@ -29,8 +29,8 @@ app.post("/success",function(req,res){
    // For production, replace with your actual SMTP server details.
     const transporter = nodemailer.createTransport({
     host: "smtp.resend.com",
-    port: 587,
-    secure: false,
+    port: 465,
+    secure: true,
     auth: {
     user: data[0].toJSON().user,
     pass: data[0].toJSON().pass,
