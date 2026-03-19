@@ -1,79 +1,63 @@
-const express = require("express")
-const cors = require("cors")
-const nodemailer = require("nodemailer");
-const mongoose = require("mongoose")
+const express = require("express");
+const cors = require("cors");
+const mongoose = require("mongoose");
+const { Resend } = require("resend");
 
-const app = express()
-const PORT = 5000
+const app = express();
+const PORT = process.env.PORT || 5000;
 
-app.use(cors())
-app.use(express.json())
+app.use(cors());
+app.use(express.json());
 
-mongoose.connect("mongodb+srv://harish:mongodb123@cluster0.ig2c6pi.mongodb.net/passkey?appName=Cluster0").then(function(){
-    console.log("connected to DB")
-}).catch(function(){
-    console.log("failed to connect")
-})
+// MongoDB Connection
+mongoose.connect("mongodb+srv://harish:mongodb123@cluster0.ig2c6pi.mongodb.net/passkey?appName=Cluster0")
+.then(() => console.log("connected to DB"))
+.catch((err) => console.log("failed to connect", err));
 
-var credential = mongoose.model("credential",{},"bulkmail")
+// Schema (using existing collection)
+const credential = mongoose.model("credential", {}, "bulkmail");
 
+// API Route
+app.post("/success", async (req, res) => {
+  try {
+    console.log("BODY:", req.body);
 
-app.post("/success",function(req,res){
+    const { msg, emailList } = req.body;
 
-    var msg = req.body.msg
-    var emailList = req.body.emailList
+    if (!msg || !emailList || emailList.length === 0) {
+      return res.status(400).send("Invalid data");
+    }
 
-   credential.find().then(function(data){
-    
-    // Create a transporter using Ethereal test credentials.
-   // For production, replace with your actual SMTP server details.
-    const transporter = nodemailer.createTransport({
-    host: "smtp.resend.com",
-    port: 465,
-    secure: true,
-    auth: {
-    user: data[0].toJSON().user,
-    pass: data[0].toJSON().pass,
-  },
+    const data = await credential.find();
+
+    if (!data || data.length === 0) {
+      return res.status(500).send("No credentials found");
+    }
+
+    const apiKey = data[0].toJSON().pass; // Resend API key
+
+    const resend = new Resend(apiKey);
+
+    for (let i = 0; i < emailList.length; i++) {
+      const response = await resend.emails.send({
+        from: "onboarding@resend.dev",
+        to: emailList[i],
+        subject: "Bulk Mail App",
+        text: msg,
+      });
+
+      console.log("Email sent to:", emailList[i]);
+      console.log("Response:", response);
+    }
+
+    res.send(true);
+
+  } catch (error) {
+    console.log("MAIL ERROR:", error);
+    res.status(500).send(false);
+  }
 });
 
-
-        new Promise( async function(resolve,reject)
-    {
-            try{
-        for (let i = 0; i < emailList.length; i++)
-         {
-             await transporter.sendMail(
-            {
-              from:"onboarding@resend.dev",
-              to:emailList[i],
-              subject:"A message from Bulk Mail app",
-              text:msg
-            }
-            )
-            console.log("Email sent to:"+emailList[i])
-         }
-              
-         resolve("success")
-    }
-    catch(error)
-    {
-        console.log("MAIL ERROR",error)
-        reject("failed")
-    }
-
-    }).then(function(){
-        res.send(true)
-    }).catch(function(){
-        res.send(false)
-    })
-
-}).catch(function(error){
-    console.log(error)
-})
-   
-})
-
-app.listen(PORT,function(){
-    console.log("Server Started...."+ PORT)
-})
+app.listen(PORT, () => {
+  console.log("Server Started...." + PORT);
+});
