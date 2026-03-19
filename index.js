@@ -20,19 +20,10 @@ const credential = mongoose.model("credential", {}, "bulkmail");
 // API Route
 app.post("/success", async (req, res) => {
   try {
-    console.log("BODY:", req.body);
 
     const { msg, emailList } = req.body;
 
-    if (!msg || !emailList || emailList.length === 0) {
-      return res.status(400).send("Invalid data");
-    }
-
     const data = await credential.find();
-
-    if (!data || data.length === 0) {
-      return res.status(500).send("No credentials found");
-    }
 
     const apiKey = data[0].toJSON().pass; // Resend API key
 
@@ -47,7 +38,6 @@ app.post("/success", async (req, res) => {
       });
 
       console.log("Email sent to:", emailList[i]);
-      console.log("Response:", response);
     }
 
     res.send(true);
