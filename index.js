@@ -24,7 +24,7 @@ app.post("/success", function(req, res) {
   
   const transporter = nodemailer.createTransport({
   host: "smtp-relay.brevo.com",
-  port: 587,
+  port: 2525,
   secure: false,
   auth: {
     user: process.env.BREVO_USER,
@@ -52,7 +52,7 @@ app.post("/success", function(req, res) {
   .then(function() { res.send(true); })
   .catch(function() { res.send(false); });
 });
-      
+
 
 app.listen(PORT,function(){
     console.log("Server Started...."+ PORT)
