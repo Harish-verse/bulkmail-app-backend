@@ -23,18 +23,20 @@ app.post("/success", function(req, res) {
 
   
   const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
+  host: "smtp-relay.brevo.com",
+  port: 587,
+  secure: false,
+  auth: {
+    user: process.env.BREVO_USER,
+    pass: process.env.BREVO_PASS,
+  },
+});
 
   new Promise(async function(resolve, reject) {
     try {
       for (let i = 0; i < emailList.length; i++) {
         await transporter.sendMail({
-          from: process.env.EMAIL_USER,
+          from: process.env.BREVO_USER,
           to: emailList[i],
           subject: "A message from Bulk Mail app",
           text: msg,
