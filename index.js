@@ -21,11 +21,11 @@ app.post("/success", async function(req, res) {
   const msg = req.body.msg;
   const emailList = req.body.emailList;
 
+  const defaultClient = Brevo.ApiClient.instance;
+  const apiKey = defaultClient.authentications["api-key"];
+  apiKey.apiKey = process.env.BREVO_API_KEY;
+
   const apiInstance = new Brevo.TransactionalEmailsApi();
-  apiInstance.setApiKey(
-    Brevo.TransactionalEmailsApiApiKeys.apiKey,
-    process.env.BREVO_API_KEY
-  );
 
   try {
     for (let i = 0; i < emailList.length; i++) {
