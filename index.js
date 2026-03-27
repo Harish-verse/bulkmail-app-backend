@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
-const Brevo = require("@getbrevo/brevo");
+const SibApiV3Sdk = require("sib-api-v3-sdk");
 
 const app = express()
 const PORT = 5000
@@ -21,7 +21,7 @@ app.post("/success", async function(req, res) {
   const msg = req.body.msg;
   const emailList = req.body.emailList;
 
-  const defaultClient = Brevo.ApiClient.instance;
+  const defaultClient = SibApiV3Sdk.ApiClient.instance;
   const apiKey = defaultClient.authentications["api-key"];
   apiKey.apiKey = process.env.BREVO_API_KEY;
 
