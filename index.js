@@ -37,7 +37,7 @@ console.log("BREVO_PASS:", process.env.BREVO_PASS);
     try {
       for (let i = 0; i < emailList.length; i++) {
         await transporter.sendMail({
-          from: process.env.BREVO_USER,
+          from: "harishkumar59455@gmail.com",
           to: emailList[i],
           subject: "A message from Bulk Mail app",
           text: msg,
