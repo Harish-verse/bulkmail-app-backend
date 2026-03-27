@@ -20,8 +20,7 @@ mongoose.connect("mongodb+srv://harish:mongodb123@cluster0.ig2c6pi.mongodb.net/p
 app.post("/success", function(req, res) {
   var msg = req.body.msg;
   var emailList = req.body.emailList;
-console.log("BREVO_USER:", process.env.BREVO_USER);
-console.log("BREVO_PASS:", process.env.BREVO_PASS);
+
   
   const transporter = nodemailer.createTransport({
   host: "smtp-relay.brevo.com",
