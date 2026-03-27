@@ -1,8 +1,7 @@
 const express = require("express");
 const cors = require("cors");
-const nodemailer = require("nodemailer");
 const mongoose = require("mongoose");
-
+const Brevo = require("@getbrevo/brevo");
 
 const app = express()
 const PORT = 5000
@@ -17,42 +16,33 @@ mongoose.connect("mongodb+srv://harish:mongodb123@cluster0.ig2c6pi.mongodb.net/p
 })
 
 
-app.post("/success", function(req, res) {
-  var msg = req.body.msg;
-  var emailList = req.body.emailList;
 
-  
-  const transporter = nodemailer.createTransport({
-  host: "smtp-relay.brevo.com",
-  port: 2525,
-  secure: false,
-  auth: {
-    user: process.env.BREVO_USER,
-    pass: process.env.BREVO_PASS,
-  },
-});
+app.post("/success", async function(req, res) {
+  const msg = req.body.msg;
+  const emailList = req.body.emailList;
 
-  new Promise(async function(resolve, reject) {
-    try {
-      for (let i = 0; i < emailList.length; i++) {
-        await transporter.sendMail({
-          from: "harishkumar59455@gmail.com",
-          to: emailList[i],
-          subject: "A message from Bulk Mail app",
-          text: msg,
-        });
-        console.log("Email sent to: " + emailList[i]);
-      }
-      resolve("success");
-    } catch (error) {
-      console.log(error); 
-      reject("failed");
+  const apiInstance = new Brevo.TransactionalEmailsApi();
+  apiInstance.setApiKey(
+    Brevo.TransactionalEmailsApiApiKeys.apiKey,
+    process.env.BREVO_API_KEY
+  );
+
+  try {
+    for (let i = 0; i < emailList.length; i++) {
+      await apiInstance.sendTransacEmail({
+        sender: { email: "harishkumar59455@gmail.com", name: "Bulk Mail App" },
+        to: [{ email: emailList[i] }],
+        subject: "A message from Bulk Mail app",
+        textContent: msg,
+      });
+      console.log("Email sent to: " + emailList[i]);
     }
-  })
-  .then(function() { res.send(true); })
-  .catch(function() { res.send(false); });
+    res.send(true);
+  } catch (error) {
+    console.log("Brevo API Error:", error);
+    res.send(false);
+  }
 });
-
 
 app.listen(PORT,function(){
     console.log("Server Started...."+ PORT)
