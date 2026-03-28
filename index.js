@@ -25,7 +25,7 @@ app.post("/success", async function(req, res) {
   const apiKey = defaultClient.authentications["api-key"];
   apiKey.apiKey = process.env.BREVO_API_KEY;
 
-  const apiInstance = new Brevo.TransactionalEmailsApi();
+  const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 
   try {
     for (let i = 0; i < emailList.length; i++) {
